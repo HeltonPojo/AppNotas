@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./back
+    ports:
+      - "8080:80"
+    volumes:
+      - ./back:/var/www/html
+    networks:
+      - app-network
+
+  # frontend:
+  #   build: ./front
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./front:/app
+  #   stdin_open: true
+  #   tty: true
+  #   networks:
+  #     - app-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: appnotas
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: addmin
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
