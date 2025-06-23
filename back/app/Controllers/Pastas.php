@@ -7,9 +7,6 @@ use App\Models\PastaModel;
 
 class Pastas extends ResourceController
 {
-    // private $model;
-    private $key = env('JWT_SECRET');
-
     public function __construct()
     {
         $this->model = new PastaModel();
@@ -25,7 +22,7 @@ class Pastas extends ResourceController
         $token = str_replace('Bearer ', '', $authHeader);
 
         try {
-            $decoded = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key($this->key, 'HS256'));
+            $decoded = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key(env('JWT_SECRET'), 'HS256'));
             return (array) $decoded;
         } catch (\Exception $e) {
             return null;

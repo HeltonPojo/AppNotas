@@ -3,15 +3,13 @@
 namespace App\Controllers;
 
 use CodeIgniter\RESTful\ResourceController;
-use App\Models\PastaModel;
+use App\Models\NotasModel;
 
 class Notas extends ResourceController
 {
-    private $key = env('JWT_SECRET');
-
     public function __construct()
     {
-
+        $this->model = new NotasModel();
     }
     private function getUsuarioFromToken()
     {
@@ -23,7 +21,7 @@ class Notas extends ResourceController
         $token = str_replace('Bearer ', '', $authHeader);
 
         try {
-            $decoded = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key($this->key, 'HS256'));
+            $decoded = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key(env('JWT_SECRET'), 'HS256'));
             return (array) $decoded;
         } catch (\Exception $e) {
             return null;
@@ -90,7 +88,7 @@ class Notas extends ResourceController
         try {
             $nota = $this->model->find($id);
 
-            if (!$nota || $nota['usuario_id'] !== $usuario['uid']) {
+            if (!$nota || $nota['usuario_id'] != $usuario['uid']) {
                 return $this->failNotFound('Nota não encontrada ou acesso negado.');
             }
         } catch (\Exception $e) {
@@ -105,7 +103,7 @@ class Notas extends ResourceController
         $usuario = $this->getUsuarioFromToken();
         $nota = $this->model->find($id);
 
-        if (!$nota || $nota['usuario_id'] !== $usuario['uid']) {
+        if (!$nota || $nota['usuario_id'] != $usuario['uid']) {
             return $this->failNotFound('Nota não encontrada ou acesso negado.');
         }
 
@@ -119,7 +117,7 @@ class Notas extends ResourceController
         $usuario = $this->getUsuarioFromToken();
         $nota = $this->model->find($id);
 
-        if (!$nota || $nota['usuario_id'] !== $usuario['uid']) {
+        if (!$nota || $nota['usuario_id'] != $usuario['uid']) {
             return $this->failNotFound('Nota não encontrada ou acesso negado.');
         }
 

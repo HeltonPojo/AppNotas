@@ -14,12 +14,10 @@ $routes->group('api', function ($routes) {
 });
 
 $routes->group('api', ['filter' => 'auth'], function ($routes) {
-    $routes->post('login', 'Auth::verifyToken');
-
     $routes->get('pastas', 'Pastas::index');
     $routes->post('pastas', 'Pastas::create');
-    $routes->put('pastas', 'Pastas::update/$1');
-    $routes->delete('pastas', 'Pastas::delete/$1');
+    $routes->put('pastas/(:num)', 'Pastas::update/$1');
+    $routes->delete('pastas/(:num)', 'Pastas::delete/$1');
 
     $routes->get('notas', 'Notas::index');
     $routes->get('notas/(:num)', 'Notas::show/$1');

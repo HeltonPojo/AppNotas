@@ -5,7 +5,6 @@ namespace App\Controllers;
 use App\Models\UsuarioModel;
 use CodeIgniter\RESTful\ResourceController;
 use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 
 class Auth extends ResourceController
 {
@@ -38,7 +37,7 @@ class Auth extends ResourceController
             'email' => $email,
         ];
 
-        $jwt = JWT::encode($payload, getenv('JWT_SECRET'), 'HS256');
+        $jwt = JWT::encode($payload, env('JWT_SECRET'), 'HS256');
 
         return $this->respond(['token' => $jwt], 200);
 
@@ -92,21 +91,4 @@ class Auth extends ResourceController
         return $this->respondCreated(['token' => $jwt]);
     }
 
-    public function verifyToken()
-    {
-        $authHeader = $this->request->getHeaderLine("Authorization");
-
-        if (!$authHeader || !str_starts_with($authHeader, 'Bearer ')) {
-            return $this->fail('Token não enviado.', 401);
-        }
-
-        $token = str_replace('Bearer ', '', $authHeader);
-
-        try {
-            $decoded = JWT::decode($token, new Key(getenv("JWT_SECRET"), 'HS256'));
-            return $this->respond(['status' => 'Autorizado', 'data' => $decoded]);
-        } catch (\Exception $e) {
-            return $this->fail('Token inválido: ' . $e->getMessage(), 401);
-        }
-    }
 }
