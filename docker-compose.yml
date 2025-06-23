@@ -3,12 +3,16 @@ version: "3.8"
 services:
   backend:
     build: ./back
+    environment:
+      - JWT_SECRET=devwebcefet
     ports:
       - "8080:80"
     volumes:
       - ./back:/var/www/html
     networks:
       - app-network
+    depends_on:
+      - mysql
 
   # frontend:
   #   build: ./front
@@ -28,7 +32,7 @@ services:
     environment:
       MYSQL_DATABASE: appnotas
       MYSQL_USER: admin
-      MYSQL_PASSWORD: addmin
+      MYSQL_PASSWORD: admin
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - mysql-data:/var/lib/mysql

@@ -21,6 +21,7 @@ class Filters extends BaseConfig
     public array $aliases = [
         'csrf'          => CSRF::class,
         'toolbar'       => DebugToolbar::class,
+        'auth' => \App\Filters\JwtFilter::class,
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
