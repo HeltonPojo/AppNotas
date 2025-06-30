@@ -23,3 +23,5 @@ docker exec -it <nome do conteiner mysql> mysql -u root -p
 ```
 
 Dentro do banco de dados e dentro do schema de appnotas rodar o script: `./bd/banco.sql`
+
+Para acessar o aplicação basta acessar o endereço ``http://localhost/``

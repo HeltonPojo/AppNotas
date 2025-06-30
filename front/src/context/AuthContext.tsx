@@ -24,7 +24,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   });
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // Simulação de login
+    // TODO: Mudar aqui para pegar do Endpoint
     const mockUser = { id: '1', email, name: email.split('@')[0] };
     setUser(mockUser);
     localStorage.setItem('user', JSON.stringify(mockUser));
@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const register = async (name: string, email: string, password: string): Promise<boolean> => {
-    // Simulação de registro
+    // TODO: Mudar aqui para pegar do Endpoint
     const mockUser = { id: '1', email, name };
     setUser(mockUser);
     localStorage.setItem('user', JSON.stringify(mockUser));

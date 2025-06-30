@@ -34,13 +34,15 @@ const NotesContext = createContext<NotesContextType | undefined>(undefined);
 
 export function NotesProvider({ children }: { children: React.ReactNode }) {
   const [selectedFolderId, setSelectedFolderId] = useState('all');
-  
+
+  // TODO: Mudar aqui para pegar do Endpoint
   const [folders, setFolders] = useState<Folder[]>([
     { id: 'personal', name: 'Pessoal', color: 'bg-blue-500' },
     { id: 'work', name: 'Trabalho', color: 'bg-green-500' },
     { id: 'ideas', name: 'Ideias', color: 'bg-purple-500' },
   ]);
 
+  // TODO: Mudar aqui para pegar do Endpoint
   const [notes, setNotes] = useState<Note[]>([
     {
       id: '1',
@@ -60,6 +62,7 @@ export function NotesProvider({ children }: { children: React.ReactNode }) {
     }
   ]);
 
+  // TODO: Mudar aqui para criar no Endpoint
   const createNote = (title: string, content: string, folderId: string) => {
     const newNote: Note = {
       id: Date.now().toString(),
@@ -72,18 +75,21 @@ export function NotesProvider({ children }: { children: React.ReactNode }) {
     setNotes(prev => [...prev, newNote]);
   };
 
+  // TODO: Mudar aqui para atualizar no Endpoint
   const updateNote = (id: string, title: string, content: string) => {
-    setNotes(prev => prev.map(note => 
-      note.id === id 
+    setNotes(prev => prev.map(note =>
+      note.id === id
         ? { ...note, title, content, updatedAt: new Date() }
         : note
     ));
   };
 
+  // TODO: Mudar aqui para apagar no Endpoint
   const deleteNote = (id: string) => {
     setNotes(prev => prev.filter(note => note.id !== id));
   };
 
+  // TODO: Mudar aqui para criar no Endpoint
   const createFolder = (name: string, color: string) => {
     const newFolder: Folder = {
       id: Date.now().toString(),
@@ -93,12 +99,14 @@ export function NotesProvider({ children }: { children: React.ReactNode }) {
     setFolders(prev => [...prev, newFolder]);
   };
 
+  // TODO: Mudar aqui para atualizar no Endpoint
   const updateFolder = (id: string, name: string, color: string) => {
-    setFolders(prev => prev.map(folder => 
+    setFolders(prev => prev.map(folder =>
       folder.id === id ? { ...folder, name, color } : folder
     ));
   };
 
+  // TODO: Mudar aqui para apagar no Endpoint
   const deleteFolder = (id: string) => {
     setFolders(prev => prev.filter(folder => folder.id !== id));
     setNotes(prev => prev.filter(note => note.folderId !== id));
@@ -111,6 +119,7 @@ export function NotesProvider({ children }: { children: React.ReactNode }) {
     setSelectedFolderId(folderId);
   };
 
+  // TODO: Mudar aqui para apagar no Endpoint
   const getNotesForFolder = (folderId: string) => {
     if (folderId === 'all') return notes;
     return notes.filter(note => note.folderId === folderId);

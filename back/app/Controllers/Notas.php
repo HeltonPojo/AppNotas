@@ -52,18 +52,14 @@ class Notas extends ResourceController
 
         $total = $query->countAllResults(false);
 
-        try {
-            $notas = $query->paginate($limit, 'default', $page);
-        } catch (\Exception $e) {
-            return $this->failServerError();
-        }
+        $notas = $query->paginate($limit, 'default', $page);
         return $this->respond([
-          'notas' => $notas,
-          'pagina' => $page,
-          'limite' => $limit,
-          'total' => $total,
-          'total_paginas' => ceil($total / $limit),
-        ]);
+           'notas' => $notas,
+           'pagina' => $page,
+           'limite' => $limit,
+           'total' => $total,
+           'total_paginas' => ceil($total / $limit),
+         ]);
     }
 
 
@@ -73,28 +69,18 @@ class Notas extends ResourceController
         $data = $this->request->getJSON(true);
         $data['usuario_id'] = $usuario['uid'];
 
-        try {
-            $this->model->insert($data);
-        } catch (\Exception $e) {
-            return $this->failServerError();
-        }
-
+        $this->model->insert($data);
         return $this->respondCreated(['id' => $this->model->getInsertID()]);
     }
 
     public function show($id = null)
     {
         $usuario = $this->getUsuarioFromToken();
-        try {
-            $nota = $this->model->find($id);
+        $nota = $this->model->find($id);
 
-            if (!$nota || $nota['usuario_id'] != $usuario['uid']) {
-                return $this->failNotFound('Nota não encontrada ou acesso negado.');
-            }
-        } catch (\Exception $e) {
-            return $this->failServerError();
+        if (!$nota || $nota['usuario_id'] != $usuario['uid']) {
+            return $this->failNotFound('Nota não encontrada ou acesso negado.');
         }
-
         return $this->respond($nota);
     }
 
