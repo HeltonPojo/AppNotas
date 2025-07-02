@@ -38,11 +38,8 @@ class Pastas extends ResourceController
             return $this->failUnauthorized();
         }
 
-        try {
-            $res = $this->model->where('usuario_id', $usuario['uid'])->findAll();
-        } catch (\Exception $e) {
-            return $this->failServerError();
-        }
+        $res = $this->model->where('usuario_id', $usuario['uid'])->findAll();
+
         return $this->respond($res);
     }
 
@@ -56,12 +53,7 @@ class Pastas extends ResourceController
         $data = $this->request->getJSON(true);
         $data['usuario_id'] = $usuario['uid'];
 
-        try {
-            $this->model->insert($data);
-        } catch (\Exception $e) {
-            return $this->failServerError();
-        }
-
+        $this->model->insert($data);
         return $this->respondCreated(['id' => $this->model->getInsertID()]);
     }
 
@@ -78,12 +70,7 @@ class Pastas extends ResourceController
         }
 
         $data = $this->request->getJSON(true);
-        try {
-            $this->model->update($id, $data);
-        } catch (\Exception $e) {
-            return $this->failServerError();
-        }
-
+        $this->model->update($id, $data);
         return $this->respond(['message' => 'Atualizada com sucesso']);
     }
 
@@ -98,12 +85,7 @@ class Pastas extends ResourceController
         if (!$pasta || $pasta['usuario_id'] != $usuario['uid']) {
             return $this->failNotFound("Pasta não encontrada ou acesso negado.");
         }
-        try {
-            $this->model->delete($id);
-        } catch (\Exception $e) {
-            return $this->failServerError();
-        }
-
+        $this->model->delete($id);
 
         return $this->respondDeleted(['message' => 'Deletada com sucesso']);
     }

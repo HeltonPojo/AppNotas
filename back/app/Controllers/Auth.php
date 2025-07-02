@@ -19,6 +19,10 @@ class Auth extends ResourceController
             return $this->fail('Campos email e password necessarios', 400);
         }
 
+        if (!preg_match('/^[\w\.-]+@[\w\.-]+\.\w{2,}$/', $email)) {
+            return $this->failValidationErrors('O e-mail fornecido é inválido.');
+        }
+
         $model = new UsuarioModel();
         $usuario = $model->where('email', $email)->first();
 
@@ -28,12 +32,12 @@ class Auth extends ResourceController
         }
 
         $issuedAt = time();
-        $expire = $issuedAt + 3600; // 1h
+        $expire = $issuedAt + 259200;
 
         $payload = [
             'iat' => $issuedAt,
             'exp' => $expire,
-            'uid' => 1,
+            'uid' => $usuario['id'],
             'email' => $email,
         ];
 
@@ -45,13 +49,17 @@ class Auth extends ResourceController
 
     public function register()
     {
-        $json = $this->request->getJSON(true);
+        $json = $this->request->getJSON();
 
-        $email = $json['email'] ?? null;
-        $senha = $json['password'] ?? null;
+        $email = $json->email ?? null;
+        $password = $json->password ?? null;
 
-        if (!$email || !$senha) {
+        if (!$email || !$password) {
             return $this->failValidationErrors('Email e senha são obrigatórios.');
+        }
+
+        if (!preg_match('/^[\w\.-]+@[\w\.-]+\.\w{2,}$/', $email)) {
+            return $this->failValidationErrors('O e-mail fornecido é inválido.');
         }
 
         $model = new \App\Models\UsuarioModel();
@@ -59,7 +67,6 @@ class Auth extends ResourceController
         try {
             $existingUser = $model->where('email', $email)->first();
         } catch (\Exception $e) {
-            var_dump("o erro deu aqui");
             return $this->failServerError("erro no banco de dados");
         }
 
@@ -67,7 +74,7 @@ class Auth extends ResourceController
             return $this->failResourceExists('Email já cadastrado.');
         }
 
-        $hash = password_hash($senha, PASSWORD_BCRYPT);
+        $hash = password_hash($password, PASSWORD_BCRYPT);
 
         $model->insert([
             'email' => $email,
@@ -77,7 +84,7 @@ class Auth extends ResourceController
         $usuarioId = $model->getInsertID();
 
         $issuedAt = time();
-        $expire = $issuedAt + 3600;
+        $expire = $issuedAt + 259200;
 
         $payload = [
             'iat' => $issuedAt,

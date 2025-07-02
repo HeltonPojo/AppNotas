@@ -4,13 +4,16 @@ namespace App\Controllers;
 
 use CodeIgniter\RESTful\ResourceController;
 use App\Models\NotasModel;
+use App\Models\PastaModel;
 
 class Notas extends ResourceController
 {
     public function __construct()
     {
         $this->model = new NotasModel();
+        $pasta = new PastaModel();
     }
+
     private function getUsuarioFromToken()
     {
         $authHeader = $this->request->getHeaderLine("Authorization");
@@ -32,7 +35,6 @@ class Notas extends ResourceController
     {
         $usuario = $this->getUsuarioFromToken();
         $pastaId = $this->request->getGet('pasta_id');
-        $search = $this->request->getGet('search');
         $page = (int) $this->request->getGet('page') ?: 1;
         $limit = (int) $this->request->getGet('limit') ?: 10;
 
@@ -44,10 +46,6 @@ class Notas extends ResourceController
 
         if (!empty($pastaId)) {
             $query->where('pasta_id', $pastaId);
-        }
-
-        if (!empty($search)) {
-            $query->groupStart()->like('titulo', $search)->orLike('conteudo', $search)->groupEnd();
         }
 
         $total = $query->countAllResults(false);
@@ -62,12 +60,18 @@ class Notas extends ResourceController
          ]);
     }
 
-
     public function create()
     {
         $usuario = $this->getUsuarioFromToken();
         $data = $this->request->getJSON(true);
         $data['usuario_id'] = $usuario['uid'];
+
+        if (isset($data['pasta_id'])) {
+            $res = $this->model->where('usuario_id', $usuario['uid'])->findAll();
+            if (!$res) {
+                return $this->failUnauthorized();
+            }
+        }
 
         $this->model->insert($data);
         return $this->respondCreated(['id' => $this->model->getInsertID()]);
@@ -94,6 +98,7 @@ class Notas extends ResourceController
         }
 
         $data = $this->request->getJSON(true);
+        $data['usuario_id'] = $usuario['uid'];
         $this->model->update($id, $data);
         return $this->respond(['message' => 'Nota atualizada.']);
     }
