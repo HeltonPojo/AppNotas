@@ -20,9 +20,11 @@ export function Sidebar({ onCreateNote }: SidebarProps) {
   const [folderModalOpen, setFolderModalOpen] = useState(false);
   const [editingFolder, setEditingFolder] = useState<any>(null);
 
+  const token = JSON.parse(localStorage.getItem('user')).token;
+
   const handleDeleteFolder = (folderId: string, folderName: string) => {
     if (window.confirm(`Tem certeza que deseja excluir a pasta "${folderName}"? Todas as notas desta pasta serão perdidas.`)) {
-      deleteFolder(folderId);
+      deleteFolder(folderId, token);
       toast({
         title: "Sucesso",
         description: "Pasta excluída com sucesso!"
@@ -80,7 +82,7 @@ export function Sidebar({ onCreateNote }: SidebarProps) {
                     className="flex-1 justify-start"
                   >
                     <div className={`w-3 h-3 rounded-full ${folder.color} mr-2`} />
-                    {folder.name} ({getNotesForFolder(folder.id).length})
+                    {folder.nome} ({getNotesForFolder(folder.id).length})
                   </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -101,8 +103,8 @@ export function Sidebar({ onCreateNote }: SidebarProps) {
                         <Edit className="h-4 w-4 mr-2" />
                         Editar
                       </DropdownMenuItem>
-                      <DropdownMenuItem 
-                        onClick={() => handleDeleteFolder(folder.id, folder.name)}
+                      <DropdownMenuItem
+                        onClick={() => handleDeleteFolder(folder.id, folder.nome)}
                         className="text-destructive"
                       >
                         <Trash2 className="h-4 w-4 mr-2" />

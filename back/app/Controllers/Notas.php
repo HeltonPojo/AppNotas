@@ -11,7 +11,6 @@ class Notas extends ResourceController
     public function __construct()
     {
         $this->model = new NotasModel();
-        $pasta = new PastaModel();
     }
 
     private function getUsuarioFromToken()
@@ -62,18 +61,31 @@ class Notas extends ResourceController
 
     public function create()
     {
+        $pastaModel = new PastaModel();
         $usuario = $this->getUsuarioFromToken();
         $data = $this->request->getJSON(true);
+
         $data['usuario_id'] = $usuario['uid'];
 
         if (isset($data['pasta_id'])) {
-            $res = $this->model->where('usuario_id', $usuario['uid'])->findAll();
-            if (!$res) {
-                return $this->failUnauthorized();
+            $pasta = $pastaModel
+                ->where('id', $data['pasta_id'])
+                ->where('usuario_id', $usuario['uid']) // valida que a pasta é do usuário
+                ->first();
+
+            if (!$pasta) {
+                return $this->failUnauthorized('Pasta não encontrada ou não pertence ao usuário.');
             }
         }
 
-        $this->model->insert($data);
+        if (!isset($data['titulo']) || !isset($data['conteudo'])) {
+            return $this->failValidationErrors('Campos obrigatórios: titulo e conteudo.');
+        }
+
+        if (!$this->model->insert($data)) {
+            return $this->failServerError('Erro ao criar nota.');
+        }
+
         return $this->respondCreated(['id' => $this->model->getInsertID()]);
     }
 

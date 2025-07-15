@@ -30,7 +30,7 @@ export function ViewNoteModal({ open, onClose, note, onEdit, onDelete }: ViewNot
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto [&>button]:hidden">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
-            <span>{note.title}</span>
+            <span>{note.titulo}</span>
             <div className="flex gap-2">
               <Button size="sm" variant="outline" onClick={onEdit}>
                 <Edit className="h-4 w-4" />
@@ -45,18 +45,16 @@ export function ViewNoteModal({ open, onClose, note, onEdit, onDelete }: ViewNot
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <div className="text-sm text-muted-foreground">
-            Criado em: {note.createdAt.toLocaleDateString('pt-BR')}
-            {note.updatedAt > note.createdAt && (
-              <span> • Editado em: {note.updatedAt.toLocaleDateString('pt-BR')}</span>
-            )}
-          </div>
-          <div 
+          <div
             className="prose dark:prose-invert max-w-none"
-            dangerouslySetInnerHTML={{ __html: formatContent(note.content) }}
+            dangerouslySetInnerHTML={{ __html: formatContent(note.conteudo) }}
           />
         </div>
       </DialogContent>
     </Dialog>
   );
 }
+
+//<div className="text-sm text-muted-foreground">
+//  Criado em: {note.criado_em.toLocaleDateString('pt-BR')}
+//</div>

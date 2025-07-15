@@ -25,3 +25,5 @@ $routes->group('api', ['filter' => 'auth'], function ($routes) {
     $routes->put('notas/(:num)', 'Notas::update/$1');
     $routes->delete('notas/(:num)', 'Notas::delete/$1');
 });
+
+$routes->options('(:any)', 'CorsController::preflight');

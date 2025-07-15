@@ -19,7 +19,7 @@ export function RichTextEditor({ value, onChange, placeholder }: RichTextEditorP
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const selectedText = value.substring(start, end);
-    
+
     const newText = value.substring(0, start) + before + selectedText + after + value.substring(end);
     onChange(newText);
 

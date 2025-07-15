@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
@@ -10,13 +9,22 @@ import { useNotes, Note } from "@/context/NotesContext";
 
 export function Dashboard() {
   const isMobile = useIsMobile();
-  const { selectedFolderId, getNotesForFolder, deleteNote } = useNotes();
+  const { selectedFolderId, getNotes, getFolder, getNotesForFolder, deleteNote } = useNotes();
   const [createNoteOpen, setCreateNoteOpen] = useState(false);
   const [createNoteFolderId, setCreateNoteFolderId] = useState<string>('');
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [viewingNote, setViewingNote] = useState<Note | null>(null);
 
-  const notes = getNotesForFolder(selectedFolderId);
+
+  const token = JSON.parse(localStorage.getItem('user')).token;
+  useEffect(() => {
+    if (token) {
+      getNotes(token).catch((err: any) => console.error(err));
+      getFolder(token).catch((err: any) => console.error(err));
+    }
+  }, []);
+
+  const notes = getNotesForFolder(selectedFolderId, token);
 
   const handleCreateNote = (folderId: string) => {
     setCreateNoteFolderId(folderId);
@@ -29,7 +37,7 @@ export function Dashboard() {
   };
 
   const handleDeleteNote = (noteId: string) => {
-    deleteNote(noteId);
+    deleteNote(noteId, token);
     setViewingNote(null);
   };
 
@@ -44,10 +52,10 @@ export function Dashboard() {
           <Sidebar onCreateNote={handleCreateNote} />
         </div>
       )}
-      
+
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header onCreateNote={handleCreateNote} isMobile={isMobile} />
-        
+
         <main className="flex-1 overflow-y-auto p-6">
           {notes.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center">

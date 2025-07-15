@@ -30,9 +30,11 @@ export function FolderModal({ open, onClose, folder }: FolderModalProps) {
   const { createFolder, updateFolder } = useNotes();
   const { toast } = useToast();
 
+  const token = JSON.parse(localStorage.getItem('user')).token;
+
   useEffect(() => {
     if (folder) {
-      setName(folder.name);
+      setName(folder.nome);
       setSelectedColor(folder.color);
     } else {
       setName("");
@@ -52,13 +54,13 @@ export function FolderModal({ open, onClose, folder }: FolderModalProps) {
     }
 
     if (folder) {
-      updateFolder(folder.id, name, selectedColor);
+      updateFolder(folder.id, name, selectedColor, token);
       toast({
         title: "Sucesso",
         description: "Pasta atualizada com sucesso!"
       });
     } else {
-      createFolder(name, selectedColor);
+      createFolder(name, selectedColor, token);
       toast({
         title: "Sucesso",
         description: "Pasta criada com sucesso!"
@@ -93,9 +95,8 @@ export function FolderModal({ open, onClose, folder }: FolderModalProps) {
                 <button
                   key={color}
                   type="button"
-                  className={`w-12 h-12 rounded-lg ${color} ${
-                    selectedColor === color ? 'ring-2 ring-primary ring-offset-2' : ''
-                  }`}
+                  className={`w-12 h-12 rounded-lg ${color} ${selectedColor === color ? 'ring-2 ring-primary ring-offset-2' : ''
+                    }`}
                   onClick={() => setSelectedColor(color)}
                 />
               ))}

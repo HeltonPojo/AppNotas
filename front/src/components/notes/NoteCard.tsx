@@ -63,11 +63,11 @@ export function NoteCard({ note, onView, onEdit, onDelete }: NoteCardProps) {
     <Card className="cursor-pointer hover:shadow-lg transition-all duration-200 h-full flex flex-col border-border/50 hover:border-border">
       <CardHeader className="pb-3 flex-shrink-0">
         <div className="flex items-start justify-between gap-2">
-          <CardTitle 
-            className="text-lg font-semibold line-clamp-2 flex-1 cursor-pointer text-foreground hover:text-primary transition-colors" 
+          <CardTitle
+            className="text-lg font-semibold line-clamp-2 flex-1 cursor-pointer text-foreground hover:text-primary transition-colors"
             onClick={onView}
           >
-            {note.title}
+            {note.titulo}
           </CardTitle>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -90,23 +90,24 @@ export function NoteCard({ note, onView, onEdit, onDelete }: NoteCardProps) {
       </CardHeader>
       <CardContent onClick={onView} className="pt-0 flex-1 flex flex-col justify-between">
         <div className="space-y-3">
-          <p 
+          <p
             className="text-sm text-muted-foreground line-clamp-4 leading-relaxed prose prose-sm dark:prose-invert"
-            dangerouslySetInnerHTML={{ __html: formatPreviewContent(note.content) }}
+            dangerouslySetInnerHTML={{ __html: formatPreviewContent(note.conteudo) }}
           />
         </div>
         <div className="pt-4 mt-auto">
-          <p className="text-xs text-muted-foreground/80 font-medium">
-            {note.updatedAt.toLocaleDateString('pt-BR', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric'
-            })}
-          </p>
+
         </div>
       </CardContent>
     </Card>
   );
 }
+//<p className="text-xs text-muted-foreground/80 font-medium">
+//            {note.criado_em.toLocaleDateString('pt-BR', {
+//              day: '2-digit',
+//              month: '2-digit',
+//              year: 'numeric'
+//            })}
+//          </p>
 
 

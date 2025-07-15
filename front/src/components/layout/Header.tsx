@@ -17,7 +17,7 @@ export function Header({ onCreateNote, isMobile }: HeaderProps) {
   const getCurrentFolderName = () => {
     if (selectedFolderId === 'all') return 'Todas as Notas';
     const folder = folders.find(f => f.id === selectedFolderId);
-    return folder?.name || 'Pasta não encontrada';
+    return folder?.nome || 'Pasta não encontrada';
   };
 
   const handleCreateNote = () => {

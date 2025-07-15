@@ -12,6 +12,9 @@ class JwtFilter implements FilterInterface
 {
     public function before(RequestInterface $req, $arrgs = null)
     {
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+            return response(200);
+        }
         $authHeader = $req->getHeaderLine('Authorization');
         if (!$authHeader) {
             return response()->setJSON(['error' => "Token não encontrado"])->setStatusCode(401);

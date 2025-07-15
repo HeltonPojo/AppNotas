@@ -2,9 +2,9 @@
 import React, { createContext, useContext, useState } from 'react';
 
 interface User {
-  id: string;
   email: string;
   name: string;
+  token: string;
 }
 
 interface AuthContextType {
@@ -24,16 +24,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   });
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // TODO: Mudar aqui para pegar do Endpoint
-    const mockUser = { id: '1', email, name: email.split('@')[0] };
+    const res = await fetch("http://localhost/api/login", {
+      method: "POST",
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    });
+    const data = await res.json();
+
+    const mockUser = { email, name: email.split('@')[0], token: data.token };
+
     setUser(mockUser);
     localStorage.setItem('user', JSON.stringify(mockUser));
     return true;
   };
 
   const register = async (name: string, email: string, password: string): Promise<boolean> => {
-    // TODO: Mudar aqui para pegar do Endpoint
-    const mockUser = { id: '1', email, name };
+    const res = await fetch("http://localhost/api/register", {
+      method: "POST",
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    });
+
+    const data = await res.json();
+
+    const mockUser = { email, name, token: data.token };
     setUser(mockUser);
     localStorage.setItem('user', JSON.stringify(mockUser));
     return true;

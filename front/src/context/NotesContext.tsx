@@ -1,18 +1,16 @@
-
 import React, { createContext, useContext, useState } from 'react';
 
 export interface Note {
   id: string;
-  title: string;
-  content: string;
-  folderId: string;
-  createdAt: Date;
-  updatedAt: Date;
+  titulo: string;
+  conteudo: string;
+  pasta_id: string;
+  criado_em: Date;
 }
 
 export interface Folder {
   id: string;
-  name: string;
+  nome: string;
   color: string;
 }
 
@@ -20,14 +18,16 @@ interface NotesContextType {
   notes: Note[];
   folders: Folder[];
   selectedFolderId: string;
-  createNote: (title: string, content: string, folderId: string) => void;
-  updateNote: (id: string, title: string, content: string) => void;
-  deleteNote: (id: string) => void;
-  createFolder: (name: string, color: string) => void;
-  updateFolder: (id: string, name: string, color: string) => void;
-  deleteFolder: (id: string) => void;
-  setSelectedFolder: (folderId: string) => void;
-  getNotesForFolder: (folderId: string) => Note[];
+  getNotes: (token: string) => any;
+  createNote: (titulo: string, conteudo: string, pasta_id: string, token: string) => void;
+  updateNote: (id: string, titulo: string, conteudo: string, token: string) => void;
+  deleteNote: (id: string, token: string) => void;
+  getFolder: (token: string) => any;
+  createFolder: (nome: string, color: string, token: string) => void;
+  updateFolder: (id: string, nome: string, color: string, token: string) => void;
+  deleteFolder: (id: string, token: string) => void;
+  setSelectedFolder: (pasta_id: string) => void;
+  getNotesForFolder: (pasta_id: string) => Note[];
 }
 
 const NotesContext = createContext<NotesContextType | undefined>(undefined);
@@ -35,104 +35,173 @@ const NotesContext = createContext<NotesContextType | undefined>(undefined);
 export function NotesProvider({ children }: { children: React.ReactNode }) {
   const [selectedFolderId, setSelectedFolderId] = useState('all');
 
-  // TODO: Mudar aqui para pegar do Endpoint
   const [folders, setFolders] = useState<Folder[]>([
-    { id: 'personal', name: 'Pessoal', color: 'bg-blue-500' },
-    { id: 'work', name: 'Trabalho', color: 'bg-green-500' },
-    { id: 'ideas', name: 'Ideias', color: 'bg-purple-500' },
   ]);
 
-  // TODO: Mudar aqui para pegar do Endpoint
   const [notes, setNotes] = useState<Note[]>([
-    {
-      id: '1',
-      title: 'Minha primeira nota',
-      content: 'Esta é uma nota de exemplo com **texto em negrito** e *itálico*.',
-      folderId: 'personal',
-      createdAt: new Date(),
-      updatedAt: new Date()
-    },
-    {
-      id: '2',
-      title: 'Lista de tarefas',
-      content: '# Tarefas do dia\n\n- Revisar projeto\n- Fazer exercícios\n- Ler livro',
-      folderId: 'work',
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }
   ]);
 
-  // TODO: Mudar aqui para criar no Endpoint
-  const createNote = (title: string, content: string, folderId: string) => {
+  const getNotes = async (token: string) => {
+    const res = await fetch("http://localhost/api/notas", {
+      method: "GET",
+      headers: { "Authorization": "Bearer " + token }
+    });
+    if (!res.ok)
+      throw "Erro ao atualizar a nota";
+
+    const data = await res.json();
+    setNotes(data.notas);
+    return data;
+  };
+
+  const createNote = async (titulo: string, conteudo: string, pasta_id: string, token: string) => {
+    const res = await fetch("http://localhost/api/notas", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + token },
+      body: JSON.stringify({
+        titulo,
+        conteudo,
+        pasta_id
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok)
+      throw "Erro ao criar a nota";
+
+
     const newNote: Note = {
-      id: Date.now().toString(),
-      title,
-      content,
-      folderId,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      id: data.id,
+      titulo,
+      conteudo,
+      pasta_id,
+      criado_em: new Date(),
     };
     setNotes(prev => [...prev, newNote]);
   };
 
-  // TODO: Mudar aqui para atualizar no Endpoint
-  const updateNote = (id: string, title: string, content: string) => {
+  const updateNote = async (id: string, titulo: string, conteudo: string, token: string) => {
+    const res = await fetch(`http://localhost/api/notas/${id}`, {
+      method: "PUT",
+      headers: { "Authorization": "Bearer " + token },
+      body: JSON.stringify({
+        titulo,
+        conteudo
+      })
+    });
+
+    if (!res.ok)
+      throw "Erro ao atualizar a nota";
+
     setNotes(prev => prev.map(note =>
       note.id === id
-        ? { ...note, title, content, updatedAt: new Date() }
+        ? { ...note, titulo, conteudo }
         : note
     ));
   };
 
-  // TODO: Mudar aqui para apagar no Endpoint
-  const deleteNote = (id: string) => {
+  const deleteNote = async (id: string, token: string) => {
+    const res = await fetch(`http://localhost/api/notas/${id}`, {
+      method: "DELETE",
+      headers: { "Authorization": "Bearer " + token },
+    });
+
+    if (!res.ok)
+      throw "Erro ao atualizar a nota";
+
     setNotes(prev => prev.filter(note => note.id !== id));
   };
 
-  // TODO: Mudar aqui para criar no Endpoint
-  const createFolder = (name: string, color: string) => {
+
+  const getFolder = async (token: string) => {
+    const res = await fetch("http://localhost/api/pastas", {
+      method: "GET",
+      headers: { "Authorization": "Bearer " + token }
+    });
+    const data = await res.json();
+    setFolders(data)
+    return data;
+  };
+
+
+  const createFolder = async (nome: string, color: string, token: string) => {
+    const res = await fetch("http://localhost/api/pastas", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + token },
+      body: JSON.stringify({
+        nome,
+        color
+      })
+    });
+
+    if (!res.ok)
+      throw "Erro ao criar pasta";
+
+    const data = await res.json();
+
     const newFolder: Folder = {
-      id: Date.now().toString(),
-      name,
+      id: data.id,
+      nome,
       color
     };
     setFolders(prev => [...prev, newFolder]);
   };
 
-  // TODO: Mudar aqui para atualizar no Endpoint
-  const updateFolder = (id: string, name: string, color: string) => {
+  const updateFolder = async (id: string, nome: string, color: string, token: string) => {
+    const res = await fetch(`http://localhost/api/pastas/${id}`, {
+      method: "PUT",
+      headers: { "Authorization": "Bearer " + token },
+      body: JSON.stringify({
+        nome,
+        color
+      })
+    });
+
+    if (!res.ok)
+      throw "Erro ao atualizar a nota";
+
+
     setFolders(prev => prev.map(folder =>
-      folder.id === id ? { ...folder, name, color } : folder
+      folder.id === id ? { ...folder, nome, color } : folder
     ));
   };
 
   // TODO: Mudar aqui para apagar no Endpoint
-  const deleteFolder = (id: string) => {
+  const deleteFolder = async (id: string, token: string) => {
+    const res = await fetch(`http://localhost/api/pastas/${id}`, {
+      method: "DELETE",
+      headers: { "Authorization": "Bearer " + token },
+    });
+
+    if (!res.ok)
+      throw "Erro ao atualizar a nota";
+
+
     setFolders(prev => prev.filter(folder => folder.id !== id));
-    setNotes(prev => prev.filter(note => note.folderId !== id));
+    setNotes(prev => prev.filter(note => note.pasta_id !== id));
     if (selectedFolderId === id) {
       setSelectedFolderId('all');
     }
   };
 
-  const setSelectedFolder = (folderId: string) => {
-    setSelectedFolderId(folderId);
+  const setSelectedFolder = (pasta_id: string) => {
+    setSelectedFolderId(pasta_id);
   };
 
-  // TODO: Mudar aqui para apagar no Endpoint
-  const getNotesForFolder = (folderId: string) => {
-    if (folderId === 'all') return notes;
-    return notes.filter(note => note.folderId === folderId);
+  const getNotesForFolder = (pasta_id: string) => {
+    if (pasta_id === 'all') return notes;
+    return notes.filter(note => note.pasta_id === pasta_id);
   };
-
   return (
     <NotesContext.Provider value={{
       notes,
       folders,
       selectedFolderId,
+      getNotes,
       createNote,
       updateNote,
       deleteNote,
+      getFolder,
       createFolder,
       updateFolder,
       deleteFolder,

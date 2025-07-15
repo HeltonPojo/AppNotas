@@ -19,6 +19,7 @@ class Filters extends BaseConfig
      *                                                     or [filter_name => [classname1, classname2, ...]]
      */
     public array $aliases = [
+        'cors' => \App\Filters\Cors::class,
         'csrf'          => CSRF::class,
         'toolbar'       => DebugToolbar::class,
         'auth' => \App\Filters\JwtFilter::class,
@@ -35,6 +36,7 @@ class Filters extends BaseConfig
      */
     public array $globals = [
         'before' => [
+            'cors'
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',

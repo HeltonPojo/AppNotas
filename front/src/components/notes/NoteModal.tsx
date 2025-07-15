@@ -21,10 +21,12 @@ export function NoteModal({ open, onClose, note, folderId }: NoteModalProps) {
   const { createNote, updateNote } = useNotes();
   const { toast } = useToast();
 
+  const token = JSON.parse(localStorage.getItem('user')).token;
+
   useEffect(() => {
     if (note) {
-      setTitle(note.title);
-      setContent(note.content);
+      setTitle(note.titulo);
+      setContent(note.conteudo);
     } else {
       setTitle("");
       setContent("");
@@ -43,13 +45,13 @@ export function NoteModal({ open, onClose, note, folderId }: NoteModalProps) {
     }
 
     if (note) {
-      updateNote(note.id, title, content);
+      updateNote(note.id, title, content, token);
       toast({
         title: "Sucesso",
         description: "Nota atualizada com sucesso!"
       });
     } else if (folderId) {
-      createNote(title, content, folderId);
+      createNote(title, content, folderId, token);
       toast({
         title: "Sucesso",
         description: "Nota criada com sucesso!"
