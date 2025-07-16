@@ -1,6 +1,54 @@
-### Projeto para a matéria de Desenvolvimento Web 2
+# EasyNotes: Sistema de Gerenciamento de Notas
 
-Esse é um projeto para a disciplina de Desenvolvimento web que tem o intuito de implementar um aplicativo que cria um CRUD de notas com pastas e imagens
+## Visão Geral do Projeto
+
+O EasyNotes é um projeto desenvolvido para a disciplina de Desenvolvimento Web 2, com o objetivo de demonstrar a criação de um aplicativo completo para gerenciar notas. Ele permite aos usuários criar, organizar e visualizar suas anotações. A arquitetura do projeto foi criada para ser modular e escalável, separando claramente as responsabilidades do frontend e do backend.
+
+## Funcionalidades Principais
+
+- **Criação e Edição de Notas**: Interface amigável para adicionar e modificar notas com suporte a texto formatado.
+- **Organização por Pastas**: Capacidade de criar e gerenciar pastas para categorizar notas, melhorando a organização.
+- **Autenticação de Usuários**: Sistema de cadastro e login.
+- **Interface Responsiva**: Design responsivo para garantir uma experiência consistente em diferentes dispositivos (desktop e mobile).
+- **Gerenciamento CRUD Completo**: Controle sobre suas notas e pastas (criar, visualziar, atualizar, deletar).
+
+## Tecnologias Utilizadas
+### Frontend
+- **React**
+- **Vite**
+- **TypeScript**
+- **Shadcn UI**
+- **Tailwind CSS**
+
+### Backend
+- **PHP**: Linguagem de programação.
+- **CodeIgniter 4**: Framework PHP para desenvolvimento web. Ele fornece uma estrutura MVC (Model-View-Controller) que facilita o desenvolvimento de aplicações web robustas e seguras.
+- **Firebase/PHP-JWT**: Utilizado para a implementação de JSON Web Tokens (JWT) para autenticação segura de usuários, garantindo que apenas usuários autorizados possam acessar os recursos da API.
+
+### Banco de Dados
+
+- **MySQL**: Sistema de gerenciamento de banco de dados relacional.
+
+## Rotas da API
+
+O backend expõe as seguintes rotas RESTful:
+
+### Autenticação
+- `POST /api/login`: Realiza o login do usuário.
+- `POST /api/register`: Registra um novo usuário.
+
+### Pastas
+- `GET /api/pastas`: Lista todas as pastas do usuário.
+- `POST /api/pastas`: Cria uma nova pasta.
+- `PUT /api/pastas/{id}`: Atualiza uma pasta existente.
+- `DELETE /api/pastas/{id}`: Exclui uma pasta.
+
+### Notas
+- `GET /api/notas`: Lista todas as notas do usuário.
+- `GET /api/notas/{id}`: Retorna uma nota específica.
+- `POST /api/notas`: Cria uma nova nota.
+- `PUT /api/notas/{id}`: Atualiza uma nota existente.
+- `DELETE /api/notas/{id}`: Exclui uma nota.
 
 ## Como usar
 
