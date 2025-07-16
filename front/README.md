@@ -1,11 +1,6 @@
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-
+## Tecnologias utilizadas
+- **React**
+- **Vite**
+- **TypeScript**
+- **Shadcn UI**
+- **Tailwind CSS**
